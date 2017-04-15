@@ -27,8 +27,10 @@ inquirer.prompt ([
 	}
 ]).then(function(answer){
 	switch(answer.firstMenu){
+
+// /////FIRST CASE  VIEW PRODUCTS  /////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		case "View Products for Sale":
-			console.log("============================================================");
+			console.log("==============================================================================");
 			connection.query("SELECT * FROM products", function(err, results){
 				for(i = 0; i < results.length; i++){
 					console.log(">>Item: " + results[i].item_id +
@@ -38,21 +40,74 @@ inquirer.prompt ([
 								" || Stock: " + results[i].stock_quantity + "<<");
 				}
 			});
+			console.log("==============================================================================");
 			break;
 
+// ///// SECOND  CASE  VIEW LOW INVENTORY //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		case "View Low Inventory":
-			console.log("============================================================");
-			console.log("yes we are desesperate");
+			console.log("==============================================================================");
+			var lowStockQ = "SELECT * FROM products WHERE stock_quantity < 50";
+			connection.query(lowStockQ, function(err, results){
+				for(i = 0; i < results.length; i++){
+					console.log(">>Item: " + results[i].item_id +
+								" || Product: " + results[i].product_name + 
+								" || Department: " + results[i].department_name + 
+								" || Price: " + results[i].price + 
+								" || Stock: " + results[i].stock_quantity + "<<");
+				}
+			});
+			console.log("==============================================================================");
 			break;
 
+// ///// THIRD  CASE  VIEW LOW INVENTORY //////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
 		case "Add to Inventory":
-			console.log("============================================================");
-			console.log("spend it, is not ypur money");
+			
+			console.log("==============================================================================");
+			connection.query("SELECT item_id, product_name FROM products", function(err, results){
+				for(i = 0; i < results.length; i++){
+					console.log(">>Item: " + results[i].item_id +
+								" || Product: " + results[i].product_name + "<<");
+				}
+
+
+			});//end of query function 
+
+			inquirer.prompt([
+					{
+						type: "input",
+						name: "itemId",
+						message: "Select Item Id to add Inventory",
+						validate: function(value) {
+							if (isNaN(value) == false){
+								return true;
+							}else {
+								return false;
+							}
+						}//end of validate function
+					}, {
+						type: "input",
+						name: "addUnits",
+						message: "How many units do you want to add",
+						validate: function (value){
+							if(isNaN(value) == false){
+								return true;
+							} else {
+								return false;
+							}
+						}// end of second validation
+					}
+
+				]).then(function(answer){
+					console.log(answer.itemId);
+
+				});//end of the prompt function 
+			console.log("==============================================================================");
 			break;
 
 		case "Add New Product":
-			console.log("============================================================");
-			console.log("suprise us")
+			console.log("==============================================================================");
+			console.log("suprise us");
+			console.log("==============================================================================");
 			break;
 	}
 
