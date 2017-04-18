@@ -10,7 +10,7 @@ var connection = mysql.createConnection({
 });
 
 connection.connect(function(err){
-	console.log("connected as id. " + connection.threadId);
+	// console.log("connected as id. " + connection.threadId);
 });
 
 
@@ -98,9 +98,28 @@ inquirer.prompt ([
 					}
 
 				]).then(function(answer){
-					console.log(answer.itemId);
+
+					var checkInventory = "SELECT stock_quantity FROM products WHERE ?";
+					connection.query(checkInventory, {item_id: answer.itemId}, function (err, results){
+						var actualstock = results[0].stock_quantity;
+						var reStockUnits = parseInt(answer.addUnits);
+						var updateInventory = actualstock + reStockUnits
+
+						console.log("test of " + updateInventory);
+
+						var updateQuery = "UPDATE products SET ? WHERE ?";
+						connection.query(updateQuery, [{stock_quantity: updateInventory}, {item_id: answer.itemId}]);
+					});//end of individual query function 	
+
+					var newQuery = "SELECT product_name, stock_quantity FROM products WHERE ?";
+					connection.query(newQuery,{item_id: answer.itemId}, function(err, results){
+						console.log("the new inventory for " + results[0].product_name + " is " + results[0].stock_quantity + " units.");
+					}) 				
 
 				});//end of the prompt function 
+
+
+
 			console.log("==============================================================================");
 			break;
 

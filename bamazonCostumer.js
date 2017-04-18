@@ -10,7 +10,8 @@ var connection = mysql.createConnection({
 });
 
 connection.connect(function(err){
-	console.log("You are connected as: " + connection.threadId);
+	// console.log("You are connected as: " + connection.threadId);
+	// console.log("WELCOME TO BAMAZON. WE ARE VERY HAPPY TO HELP YOU EXPEND YOUR MONNEY ON WOTHLESS PRODUCTS");
 });
 
 
@@ -21,6 +22,9 @@ connection.query("SELECT * FROM products", function(err,results){
 	}	
 });
 
+mkOrder();
+
+function mkOrder(){
 inquirer.prompt([
 	{
 		type: "input",
@@ -59,8 +63,6 @@ inquirer.prompt([
 
 		});
 		
-
-
-
-});
+});//END OF ANSWERS FUNCTION 
+}// END OF MKORDER FUNCTION 
 
