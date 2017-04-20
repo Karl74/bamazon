@@ -109,25 +109,89 @@ inquirer.prompt ([
 
 						var updateQuery = "UPDATE products SET ? WHERE ?";
 						connection.query(updateQuery, [{stock_quantity: updateInventory}, {item_id: answer.itemId}]);
+
+						checkinventory(answer);
 					});//end of individual query function 	
 
-					var newQuery = "SELECT product_name, stock_quantity FROM products WHERE ?";
-					connection.query(newQuery,{item_id: answer.itemId}, function(err, results){
-						console.log("the new inventory for " + results[0].product_name + " is " + results[0].stock_quantity + " units.");
-					}) 				
+									
 
 				});//end of the prompt function 
 
+				function checkinventory(answer){
+					var newQuery = "SELECT product_name, stock_quantity FROM products WHERE ?";
+					connection.query(newQuery,{item_id: answer.itemId}, function(err, results){
+						console.log("the new inventory for " + results[0].product_name + " is " + results[0].stock_quantity + " units.");
+					}); 
 
+				}
 
 			console.log("==============================================================================");
 			break;
 
 		case "Add New Product":
 			console.log("==============================================================================");
-			console.log("suprise us");
+			
+			inquirer.prompt([
+					{
+						type: "input",
+						name: "newItem",
+						message: "What is the product name?"
+					}, {
+						type: "input",
+						name: "department",
+						message: "On which department will be placed?"
+					}, {
+						type: "input",
+						name: "Price",
+						message: "What is the product price?"
+					}, {
+						type: "input",
+						name: "addUnits",
+						message: "How many units do you want to add",
+						validate: function (value){
+							if(isNaN(value) == false){
+								return true;
+							} else {
+								return false;
+							}
+						}// end of second validation						
+					}
+				]).then(function(answer){
+					var newProduct = "INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES ?";
+					var row = [];
+					row.push(answer.newItem);
+					row.push(answer.department);
+					row.push(parseInt(answer.Price));
+					row.push(answer.addUnits);
+
+					connection.query(newProduct, {row});
+
+
+					});
+
+
+
+
 			console.log("==============================================================================");
 			break;
 	}
 
 });//end of inquirer prompt function
+
+// ERICK'S ADVICE
+// .then(function(){
+// 	function2();
+// })
+
+// BEFORE THE ADVICE
+
+// var updateQuery = "UPDATE products SET ? WHERE ?";
+// 						connection.query(updateQuery, [{stock_quantity: updateInventory}, {item_id: answer.itemId}]);
+// 					});//end of individual query function 	
+
+// 					var newQuery = "SELECT product_name, stock_quantity FROM products WHERE ?";
+// 					connection.query(newQuery,{item_id: answer.itemId}, function(err, results){
+// 						console.log("the new inventory for " + results[0].product_name + " is " + results[0].stock_quantity + " units.");
+// 					}) 				
+
+// 				});//end of the prompt function 
