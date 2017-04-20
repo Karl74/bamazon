@@ -157,20 +157,16 @@ inquirer.prompt ([
 						}// end of second validation						
 					}
 				]).then(function(answer){
-					var newProduct = "INSERT INTO products (product_name, department_name, price, stock_quantity) VALUES ?";
-					var row = [];
-					row.push(answer.newItem);
-					row.push(answer.department);
-					row.push(parseInt(answer.Price));
-					row.push(answer.addUnits);
-
-					connection.query(newProduct, {row});
-
-
+					connection.query("INSERT INTO products SET ?", 
+						{product_name: answer.newItem, 
+						 departament_name: answer.department,
+						 price: parseInt(answer.Price),
+						 stock_quantity: parseInt(answer.addUnits)
+						},function(err){
+							if(err) throw err;
+							console.log("The new product was added!");
+						});
 					});
-
-
-
 
 			console.log("==============================================================================");
 			break;
@@ -183,15 +179,3 @@ inquirer.prompt ([
 // 	function2();
 // })
 
-// BEFORE THE ADVICE
-
-// var updateQuery = "UPDATE products SET ? WHERE ?";
-// 						connection.query(updateQuery, [{stock_quantity: updateInventory}, {item_id: answer.itemId}]);
-// 					});//end of individual query function 	
-
-// 					var newQuery = "SELECT product_name, stock_quantity FROM products WHERE ?";
-// 					connection.query(newQuery,{item_id: answer.itemId}, function(err, results){
-// 						console.log("the new inventory for " + results[0].product_name + " is " + results[0].stock_quantity + " units.");
-// 					}) 				
-
-// 				});//end of the prompt function 
